@@ -1,72 +1,105 @@
 ---
-title: Workshop Prep
+title: Tutorial Preparation
 nav: Prep
-topics: GitHub; Optional Software
 ---
 
-To create your own materials using `workshop-template-b`, please create a free [GitHub account](https://github.com/join) if you do not have one already.
-Basic familiarity with the GitHub web interface will be helpful.
+## What to Bring
 
-For a quick introduction check out GitHub's [Hello World guide](https://guides.github.com/activities/hello-world/), or the extensive [GitHub Learning Lab](https://lab.github.com/).
+Please bring a laptop with:
 
-It is possible to create a website with this template using only GitHub's web interface--in fact, it works great!
-However, for more advanced uses you will want Git, Ruby, and Jekyll installed on your computer to do local development.
+* 1 CPU core (4 recommended)
+* 4 GB of RAM (16 recommended)
+* 10 GB of free hard disk space (15 recommended)
+* Installation of the tutorial repository
+  * Installation on your native machine *or*
+  * Installation in a Docker container *or*
+  * Installation of a virtual machine
+* *Optional*: your own Verilog RTL designs!
 
-{% capture text %}
-1. Have a [GitHub](https://github.com) account.
-2. Optional: have [Git](https://git-scm.com/), [Jekyll](https://jekyllrb.com/), and a nice [text editor](https://code.visualstudio.com/) installed.
-{% endcapture %}
-{% include card.html text=text header="Setup Overview" %}
+We strongly recommend setting up the tools **before** arriving to the tutorial so you don't miss anything! We will provide
+USB 2.0 drives with virtual machine images (`.vmdk`) at the tutorial, however installing before arriving is strongly
+preferred. Internet connections may be unstable at the tutorial venue, so do not expect to connect to a remote server!
 
--------------
+## Toolchain Installation
 
-## Local Jekyll Setup [very optional]
+We provide several methods to install the tool chain. Note that OpenROAD only supports Linux and MacOS, with best
+support for Ubuntu 20 and Centos 7.
 
-### Install Git
+### Method 1: Install from Source
 
-[Git](https://git-scm.com/) is a [free](https://www.gnu.org/philosophy/free-sw.en.html), [distributed](https://en.wikipedia.org/wiki/Distributed_version_control) version control system. [GitHub](https://github.com/) is a Git repository hosting service, a place to store and sync your work in the cloud--your Jekyll and GitHub Pages projects will be under Git version control, so you need the software on your machine. 
+This method will build OpenROAD-flow-scripts components (OpenROAD and Yosys) from source. Package managers are used to
+install (most) dependencies.
 
-- Windows: install [Git for Windows](https://git-for-windows.github.io/) using the default options. This will give you Git, Git Bash, and Git GUI. Git Bash is a great terminal that lets you use UNIX style commands on Windows.
-- Mac: check if Git is already installed by opening terminal and typing `git --version`. If you do not have it, download the official [Mac installer](https://git-scm.com/downloads).
-- Linux: check if Git is already installed by opening terminal and typing `git --version`. If you do not have it, install from your distribution's software center or package manager (for Ubuntu `sudo apt install git`).
+#### Install Dependencies
 
-If you are interested in using a visual GUI application integrated with GitHub, Windows and Mac users should also install [GitHub Desktop](https://desktop.github.com/) using the default options.
-You can install GitHub Desktop in addition to other versions of Git.
+{% include accordion.html
+title1="Windows"
+text1="OpenROAD cannot run on Windows natively. We recommend installing [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install)
+and following the instructions for Linux.
 
-There are other [GUI apps available](https://git-scm.com/downloads/guis) for managing and visualizing Git repositories, including Linux options.
+Alternatively, you can install [Docker for Windows](https://docs.docker.com/desktop/install/windows-install/) and follow the instructions for Docker."
 
-### Install Ruby
+title2="MacOS" 
+text2="see OpenROAD/.github/workflows/github-actions-macos.yml
 
-[Ruby](https://www.ruby-lang.org/en/){:target="_blank" rel="noopener"} is a open source programming language popular with web applications.
-**_You do not need to know anything about Ruby_**, but you do need it to run Jekyll on your system!
+```
+# Install brew dependencies
+brew install bison boost eigen flex libomp pyqt5 python spdlog swig tcl-tk zlib
 
-Jekyll requires a Ruby version 2.4.0 or greater.
-Below are quick start steps, but you may want to refer to Jekyll's official [installation guides](https://jekyllrb.com/docs/installation/) for tips.
+# Install lemon from source
+wget http://lemon.cs.elte.hu/pub/sources/lemon-1.3.1.tar.gz
+tar -xf lemon-1.3.1.tar.gz
+cd lemon-1.3.1
+cmake -B build .
+cmake --build build -j --target install
+```
+"
 
-- **Windows:** Use [RubyInstaller for Windows](https://rubyinstaller.org/){:target="_blank" rel="noopener"}.
-    - First, [download](https://rubyinstaller.org/downloads/) the suggested stable version "WITH DEVKIT" (as of this writing, Ruby+Devkit 2.7.X (x64)) and double click to install. Use the install defaults, but make sure "Add Ruby executables to your PATH" is checked. On the final step, ensure the box to start the MSYS2 DevKit is checked.
-    - Second, the installer will open a terminal window with options to install MSYS2 DevKit components. Choose option 3, "MSYS2 and MINGW development toolchain", or simply press ENTER to install all the necessary dependencies. The installer will proceed through a bunch of steps outputting a bunch of text in the terminal window. *Eventually*, this will conclude and you should see a message with the word `success` in it. If the window doesn't close, press `Enter` again or manually close it. (The installer can be restarted by typing `ridk install` into a command prompt).
-- **Mac:** OS X has a version of Ruby installed by default. Check the version with `ruby -v`. If it is > 2.4.0 you can use the system Ruby. However, a newer version can be installed using [Homebrew](https://brew.sh/), `brew install ruby`, or a manager such as [rbenv](https://github.com/rbenv/rbenv) or [RVM](http://rvm.io/). Check the official Jekyll [Mac install docs](https://jekyllrb.com/docs/installation/#macOS) for tips.
-- **Linux:** Even though the version will not be the most up-to-date, the simplest method is to use your distro's repositories. For example on Ubuntu, `sudo apt install ruby-full`. Make sure the repository version is > 2.4.0. You will also need the build tools Make and GCC, on Ubuntu get them with `sudo apt install build-essential`. For a more up-to-date version, use a manager such as  [rbenv](https://github.com/rbenv/rbenv) or [RVM](http://rvm.io/).
+title3="Linux"
+text3="
+If you use Ubuntu or CentOS, you can use the OpenROAD dependency installer script:
+```
+micro2022tutorial/OpenROAD-flow-scripts/OpenROAD/etc/DependencyInstaller.sh
+```
+Using a different distribution is not recommended, however you may view the script and identify how to manually install
+the required packages for your distribution.
+"
+%}
 
-### Install Jekyll
+#### Build
 
-Jekyll is a Gem, a software package installed via Ruby's management system called RubyGems (similar to Python's Pip). 
-Open a terminal and type:
-`gem install jekyll bundler`
+Run the install script. This step may take up to an hour, depending on your internet connection and CPU performance.
+```
+# This script uses all available cores to build. Use --threads N to use N threads
+# Use --help to see all build options
+micro2022tutorial/OpenROAD-flow-scripts/build_openroad.sh
+```
 
-This will take a minute as Gem installs all the dependencies and builds extensions. 
+### Method 2: Install from Docker
 
-### Install Text Editor
+See the [OpenROAD docs](https://openroad.readthedocs.io/en/latest/user/BuildWithDocker.html) on how to build from
+sources and test using Docker.
 
-When working with code you should have a good text editor.
-Windows notepad does not handle UTF-8 encoding or UNIX line endings that are standard for cross platform applications. 
-For basic editing, Windows [Notepad++](https://notepad-plus-plus.org/), Mac TextEdit, or Linux Gedit are sufficient.
-However, a more complete code editor will be helpful for managing Jekyll projects.
+**Note**:
+* OpenROAD-flow-scripts is already included in the micro2022tutorial repo.
+* The tools will only be accessible inside the installed docker container.
 
-Open-source cross platform suggestions:
+### Method 3: Install a Virtual Machine
 
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [Atom](https://atom.io/)
+You may install any virtual machine which supports `.vmdk` files. Some options include:
 
-Tip: you can click `.` on any GitHub repository to [open the web editor](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) (which is a light version of VS Code)!
+* [Oracle VirtualBox](https://www.virtualbox.org)
+* [VMWare Workstation Player](https://www.vmware.com/products/workstation-player/workstation-player-evaluation.html)
+* [Microsoft Windows Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
+
+Virtual machine images will be provided at the tutorial via USB 2.0 drives.
+
+## Test the Toolchain
+
+To quickly verify that your installation is correct, run
+```
+cd micro2022tutorial/OpenROAD-flow-scripts/flow
+make
+```
+If the flow completes without error, congrats! The flow was installed successfully.
+
